@@ -7,11 +7,28 @@ export const UsersContext = createContext<{
   addUser: (name: string) => void;
   editUser: (id: number, newName: string) => void;
   deleteUser: (id: number) => void;
-}>({ users: [], addUser: () => {}, editUser: () => {}, deleteUser: () => {} });
+  addExpense: (userId: number, name: string, number: number) => void;
+  editExpense: (userId: number, expenseId: number, newName: string, newNumber: number) => void;
+  deleteExpense: (userId: number, expenseId: number) => void;
+}>({
+  users: [],
+  addUser: () => {},
+  editUser: () => {},
+  deleteUser: () => {},
+  addExpense: () => {},
+  editExpense: () => {},
+  deleteExpense: () => {},
+});
 
+interface Expenses {
+  id: number;
+  name: string;
+  number: number;
+}
 interface User {
   id: number;
   name: string;
+  expenses: Expenses[];
 }
 
 export default function TabLayout() {
@@ -23,6 +40,7 @@ export default function TabLayout() {
       {
         id: Date.now(),
         name: name,
+        expenses: [],
       },
     ]);
   }
@@ -35,9 +53,54 @@ export default function TabLayout() {
     setUsers(users.filter((user) => user.id !== id));
   }
 
+  function addExpense(userId: number, name: string, number: number) {
+    setUsers(
+      users.map((user) =>
+        user.id === userId
+          ? { ...user, expenses: [...user.expenses, { id: Date.now(), name, number }] }
+          : user
+      )
+    );
+  }
+
+  function editExpense(userId: number, expenseId: number, newName: string, newNumber: number) {
+    setUsers(
+      users.map((user) =>
+        user.id === userId
+          ? {
+              ...user,
+              expenses: user.expenses.map((expense) =>
+                expense.id === expenseId
+                  ? { ...expense, name: newName, number: newNumber }
+                  : expense
+              ),
+            }
+          : user
+      )
+    );
+  }
+
+  function deleteExpense(userId: number, expenseId: number) {
+    setUsers(
+      users.map((user) =>
+        user.id === userId
+          ? { ...user, expenses: user.expenses.filter((expense) => expense.id !== expenseId) }
+          : user
+      )
+    );
+  }
+
   return (
     <UsersContext.Provider
-      value={{ users: users, addUser: addUser, editUser: editUser, deleteUser: deleteUser }}
+      value={{
+        users,
+        addUser,
+        editUser,
+        deleteUser,
+        addExpense,
+        editExpense,
+        deleteExpense,
+      }}
     >
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
         <Tabs.Screen
@@ -48,9 +111,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="settings"
+          name="edit-expenses"
           options={{
-            title: 'Settings',
+            title: 'Edit Expenses',
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
           }}
         />
