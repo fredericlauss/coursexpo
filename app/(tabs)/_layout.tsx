@@ -5,7 +5,9 @@ import React, { createContext, useState } from 'react';
 export const UsersContext = createContext<{
   users: User[];
   addUser: (name: string) => void;
-}>({ users: [], addUser: () => {} });
+  editUser: (id: number, newName: string) => void;
+  deleteUser: (id: number) => void;
+}>({ users: [], addUser: () => {}, editUser: () => {}, deleteUser: () => {} });
 
 interface User {
   id: number;
@@ -24,8 +26,19 @@ export default function TabLayout() {
       },
     ]);
   }
+
+  function editUser(id: number, newName: string) {
+    setUsers(users.map((user) => (user.id === id ? { ...user, name: newName } : user)));
+  }
+
+  function deleteUser(id: number) {
+    setUsers(users.filter((user) => user.id !== id));
+  }
+
   return (
-    <UsersContext.Provider value={{ users: users, addUser: addUser }}>
+    <UsersContext.Provider
+      value={{ users: users, addUser: addUser, editUser: editUser, deleteUser: deleteUser }}
+    >
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
         <Tabs.Screen
           name="index"
