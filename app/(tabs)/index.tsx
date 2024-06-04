@@ -9,13 +9,7 @@ export default function Index() {
   const { users, addUser, editUser, deleteUser } = useContext(UsersContext);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <View style={{}}>
       <Text>Edit app/index.tsx to edit this screen.</Text>
       {users.map((user) => (
         <View key={user.id} style={{ flexDirection: 'row', alignItems: 'center' }}>

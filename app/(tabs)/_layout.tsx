@@ -20,15 +20,16 @@ export const UsersContext = createContext<{
   deleteExpense: () => {},
 });
 
-interface Expenses {
+interface Expense {
   id: number;
   name: string;
   number: number;
 }
+
 interface User {
   id: number;
   name: string;
-  expenses: Expenses[];
+  expenses: Expense[];
 }
 
 export default function TabLayout() {
@@ -114,6 +115,13 @@ export default function TabLayout() {
           name="edit-expenses"
           options={{
             title: 'Edit Expenses',
+            tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="show-expenses"
+          options={{
+            title: 'Show Expenses',
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
           }}
         />
